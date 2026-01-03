@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sh ./scripts/target ${{ inputs.target }}
+      - run: sh ./scripts/matrix ${{ inputs.target }}
       - uses: owenthereal/action-upterm@v1
         if: ${{ failure() && inputs.upterm }}
         with:
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
-      - run: sh ./scripts/target ${{ inputs.target }}
+      - run: sh ./scripts/matrix ${{ inputs.target }}
       - uses: owenthereal/action-upterm@v1
         if: ${{ failure() && inputs.upterm }}
         with:
@@ -57,7 +57,7 @@ jobs:
     runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
-      - run: sh ./scripts/target ${{ inputs.target }}
+      - run: sh ./scripts/matrix ${{ inputs.target }}
       - uses: owenthereal/action-upterm@v1
         if: ${{ failure() && inputs.upterm }}
         with:
@@ -68,7 +68,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sh ./scripts/target ${{ inputs.target }}
+      - run: sh ./scripts/matrix ${{ inputs.target }}
       - uses: owenthereal/action-upterm@v1
         if: ${{ failure() && inputs.upterm }}
         with:

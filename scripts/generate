@@ -1,0 +1,74 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+TARGETS_DIR="$ROOT/targets"
+TEMPLATE_DIR="$ROOT/template"
+
+if [ ! -d "$TARGETS_DIR" ]; then
+    echo "error: targets directory not found" >&2
+    exit 1
+fi
+
+if [ ! -d "$TEMPLATE_DIR" ]; then
+    echo "error: template directory not found" >&2
+    exit 1
+fi
+
+if [ ! -f "$TEMPLATE_DIR/config" ]; then
+    echo "error: template/config not found" >&2
+    exit 1
+fi
+
+if [ ! -f "$TEMPLATE_DIR/test" ]; then
+    echo "error: template/test not found" >&2
+    exit 1
+fi
+
+prompt() {
+    while true; do
+        printf '%s: ' "$1" >&2
+        read value || exit 1
+
+        if [ -n "$value" ] || [ "${2-}" = true ]; then
+            echo "$value"
+            return 0
+        fi
+
+        echo "error: $1 is required" >&2
+    done
+}
+
+echo "Create a new target:" >&2
+echo "" >&2
+
+NAME=$(prompt "NAME")
+ISSUE=$(prompt "ISSUE")
+
+TARGET="$NAME/$ISSUE"
+TARGET_DIR="$TARGETS_DIR/$TARGET"
+
+if [ -e "$TARGET_DIR" ]; then
+    echo "error: target '$TARGET' already exists" >&2
+    exit 1
+fi
+
+echo "" >&2
+
+REPO=$(prompt "REPO")
+REF=$(prompt "REF")
+
+mkdir -p "$TARGET_DIR/patches"
+touch "$TARGET_DIR/patches/.gitkeep"
+
+cat > "$TARGET_DIR/config" << EOF
+REPO='$REPO'
+REF='$REF'
+EOF
+
+cp "$TEMPLATE_DIR/test" "$TARGET_DIR/test"
+chmod +x "$TARGET_DIR/test"
+
+echo "" >&2
+echo "Created: $TARGET" >&2

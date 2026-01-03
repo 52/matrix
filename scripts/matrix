@@ -6,8 +6,10 @@ if [ -z "${1:-}" ]; then
     exit 1
 fi
 
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
 TARGET="$1"
-TARGET_DIR="$(pwd)/targets/$TARGET"
+TARGET_DIR="$ROOT/targets/$TARGET"
 
 if [ ! -f "$TARGET_DIR/config" ]; then
     echo "error: missing config in $TARGET_DIR" >&2
