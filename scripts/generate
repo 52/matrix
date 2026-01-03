@@ -21,8 +21,8 @@ if [ ! -f "$TEMPLATE_DIR/config" ]; then
     exit 1
 fi
 
-if [ ! -f "$TEMPLATE_DIR/test" ]; then
-    echo "error: template/test not found" >&2
+if [ ! -f "$TEMPLATE_DIR/main" ]; then
+    echo "error: template/main not found" >&2
     exit 1
 fi
 
@@ -59,16 +59,16 @@ echo "" >&2
 REPO=$(prompt "REPO")
 REF=$(prompt "REF")
 
-mkdir -p "$TARGET_DIR/patches"
-touch "$TARGET_DIR/patches/.gitkeep"
+mkdir -p "$TARGET_DIR"
+cp -r "$TEMPLATE_DIR/patches" "$TARGET_DIR/patches"
 
 cat > "$TARGET_DIR/config" << EOF
-REPO='$REPO'
-REF='$REF'
+REPO="$REPO"
+REF="$REF"
 EOF
 
-cp "$TEMPLATE_DIR/test" "$TARGET_DIR/test"
-chmod +x "$TARGET_DIR/test"
+cp "$TEMPLATE_DIR/main" "$TARGET_DIR/main"
+chmod +x "$TARGET_DIR/main"
 
 echo "" >&2
 echo "Created: $TARGET" >&2

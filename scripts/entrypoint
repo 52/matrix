@@ -16,8 +16,8 @@ if [ ! -f "$TARGET_DIR/config" ]; then
     exit 1
 fi
 
-if [ ! -x "$TARGET_DIR/test" ]; then
-    echo "error: test executable not found in $TARGET_DIR" >&2
+if [ ! -x "$TARGET_DIR/main" ]; then
+    echo "error: main executable not found in $TARGET_DIR" >&2
     exit 1
 fi
 
@@ -27,13 +27,6 @@ if ! command -v git >/dev/null; then
     echo "error: git not found" >&2
     exit 1
 fi
-
-for pkg in ${PKGS:-}; do
-    if ! command -v "$pkg" >/dev/null; then
-        echo "error: package '$pkg' not found" >&2
-        exit 1
-    fi
-done
 
 WORK_DIR="/tmp/matrix-$$"
 mkdir -p "$WORK_DIR"
@@ -52,4 +45,4 @@ if [ -d "$TARGET_DIR/patches" ]; then
     done
 fi
 
-"$TARGET_DIR/test"
+"$TARGET_DIR/main"
