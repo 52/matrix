@@ -1,5 +1,5 @@
 name: test
-run-name: "${{ inputs.target }} #${{ github.run_id }}"
+run-name: "${{ inputs.target }}"
 
 on:
   workflow_dispatch:
