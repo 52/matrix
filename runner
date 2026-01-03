@@ -38,7 +38,8 @@ mkdir -p "$WORK_DIR"
 
 trap 'case "$WORK_DIR" in /tmp/matrix-*) rm -rf "$WORK_DIR";; esac' EXIT
 
-git clone "$SRC" "$WORK_DIR/repo"
+echo "Cloning $REPO..."
+git clone "$REPO" "$WORK_DIR/repo"
 cd "$WORK_DIR/repo"
 git checkout "$REF"
 

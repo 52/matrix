@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 'Target (e.g. rust-lang/rust/static-lifetime-bound)'
+        description: 'Target (e.g. rust-lang/rust/static-bound)'
         required: true
         type: string
       x86_64-linux:
