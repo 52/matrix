@@ -1,0 +1,52 @@
+#!/bin/sh
+set -eu
+
+if [ -z "${1:-}" ]; then
+    echo "error: missing target argument" >&2
+    exit 1
+fi
+
+TARGET="$1"
+TARGET_DIR="$(pwd)/targets/$TARGET"
+
+if [ ! -f "$TARGET_DIR/config" ]; then
+    echo "error: missing config in $TARGET_DIR" >&2
+    exit 1
+fi
+
+if [ ! -x "$TARGET_DIR/test" ]; then
+    echo "error: test executable not found in $TARGET_DIR" >&2
+    exit 1
+fi
+
+. "$TARGET_DIR/config"
+
+if ! command -v git >/dev/null; then
+    echo "error: git not found" >&2
+    exit 1
+fi
+
+for pkg in ${PKGS:-}; do
+    if ! command -v "$pkg" >/dev/null; then
+        echo "error: package '$pkg' not found" >&2
+        exit 1
+    fi
+done
+
+WORK_DIR="/tmp/matrix-$$"
+mkdir -p "$WORK_DIR"
+
+trap 'case "$WORK_DIR" in /tmp/matrix-*) rm -rf "$WORK_DIR";; esac' EXIT
+
+git clone "$SRC" "$WORK_DIR/repo"
+cd "$WORK_DIR/repo"
+git checkout "$REF"
+
+if [ -d "$TARGET_DIR/patches" ]; then
+    for patch in "$TARGET_DIR/patches/"*.patch; do
+        [ -e "$patch" ] || continue
+        git apply "$patch"
+    done
+fi
+
+"$TARGET_DIR/test"
