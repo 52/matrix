@@ -1,33 +1,33 @@
 #!/bin/sh
 set -eu
 
-if [ -z "${1:-}" ]; then
-    echo "error: missing target argument" >&2
-    exit 1
-fi
-
 ROOT="$(cd "$(dirname "${0}")/.." && pwd)"
 
 . "${ROOT}/lib/platform.sh"
 . "${ROOT}/lib/trace.sh"
 
+if [ -z "${1:-}" ]; then
+    trace_error "Missing target argument"
+    exit 1
+fi
+
 TARGET="${1}"
 TARGET_DIR="${ROOT}/targets/${TARGET}"
 
 if [ ! -f "${TARGET_DIR}/config" ]; then
-    echo "error: config not found in ${TARGET_DIR}" >&2
+    trace_error "Configuration file not found: ${TARGET_DIR}/config"
     exit 1
 fi
 
 if [ ! -r "${TARGET_DIR}/main" ]; then
-    echo "error: main not found in ${TARGET_DIR}" >&2
+    trace_error "Main script not found: ${TARGET_DIR}/main"
     exit 1
 fi
 
 . "${TARGET_DIR}/config"
 
 if ! command -v git >/dev/null; then
-    echo "error: git not found" >&2
+    trace_error "Required dependency not found: git"
     exit 1
 fi
 
@@ -36,15 +36,18 @@ mkdir -p "${WORK_DIR}"
 
 trap 'case "${WORK_DIR}" in /tmp/matrix-*) rm -rf "${WORK_DIR}";; esac' EXIT
 
-echo "Cloning ${REPO}..."
-git clone "${REPO}" "${WORK_DIR}" && cd "${WORK_DIR}"
-git checkout "${REF}"
+trace_info "Cloning ${REPO}..."
+git clone --quiet "${REPO}" "${WORK_DIR}"
+cd "${WORK_DIR}"
+git checkout --quiet "${REF}"
 
 if [ -d "${TARGET_DIR}/patches" ]; then
     for patch in "${TARGET_DIR}/patches/"*.patch; do
         [ -e "${patch}" ] || continue
+        trace_info "Applying ${patch##*/}"
         git apply "${patch}"
     done
 fi
 
+trace_info "Executing target: ${TARGET}"
 ( . "${TARGET_DIR}/main" )

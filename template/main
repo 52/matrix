@@ -49,7 +49,7 @@ __platform_run "aarch64-darwin" __setup_aarch64-darwin
 # Primary entry point.
 # Executed on all platforms after the setup hooks complete.
 __main__() {
-    :
+    echo "Hello, world!"
 }
 
 __main__
