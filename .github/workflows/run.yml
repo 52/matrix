@@ -1,4 +1,4 @@
-name: test
+name: run
 run-name: "${{ inputs.target }}"
 
 on:
@@ -24,6 +24,10 @@ on:
         description: "Run on aarch64-darwin"
         type: boolean
         default: true
+      upterm:
+        description: "Start upterm session after failure"
+        type: boolean
+        default: false
 
 jobs:
   x86_64-linux:
@@ -31,25 +35,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sh ./runner ${{ inputs.target }}
+      - run: sh ./run ${{ inputs.target }}
+      - uses: owenthereal/action-upterm@v1
+        if: ${{ failure() && inputs.upterm }}
+        with:
+          limit-access-to-actor: true
 
   aarch64-linux:
     if: ${{ inputs.aarch64-linux }}
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
-      - run: sh ./runner ${{ inputs.target }}
+      - run: sh ./run ${{ inputs.target }}
+      - uses: owenthereal/action-upterm@v1
+        if: ${{ failure() && inputs.upterm }}
+        with:
+          limit-access-to-actor: true
 
   x86_64-darwin:
     if: ${{ inputs.x86_64-darwin }}
     runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
-      - run: sh ./runner ${{ inputs.target }}
+      - run: sh ./run ${{ inputs.target }}
+      - uses: owenthereal/action-upterm@v1
+        if: ${{ failure() && inputs.upterm }}
+        with:
+          limit-access-to-actor: true
 
   aarch64-darwin:
     if: ${{ inputs.aarch64-darwin }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sh ./runner ${{ inputs.target }}
+      - run: sh ./run ${{ inputs.target }}
+      - uses: owenthereal/action-upterm@v1
+        if: ${{ failure() && inputs.upterm }}
+        with:
+          limit-access-to-actor: true
