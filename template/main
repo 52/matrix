@@ -3,25 +3,25 @@ set -eu
 
 # Setup hook for x86_64 Linux systems.
 # Executed only on x86_64-linux platforms.
-__setup_x86_64-linux() {
-    :
-}
-
-# Setup hook for x86_64 macOS systems.
-# Executed only on x86_64-darwin platforms.
-__setup_x86_64-darwin() {
+__setup_x86_64_linux() {
     :
 }
 
 # Setup hook for ARM64 Linux systems.
 # Executed only on aarch64-linux platforms.
-__setup_aarch64-linux() {
+__setup_aarch64_linux() {
+    :
+}
+
+# Setup hook for x86_64 macOS systems.
+# Executed only on x86_64-darwin platforms.
+__setup_x86_64_darwin() {
     :
 }
 
 # Setup hook for ARM64 macOS systems.
 # Executed only on aarch64-darwin platforms.
-__setup_aarch64-darwin() {
+__setup_aarch64_darwin() {
     :
 }
 
@@ -40,11 +40,11 @@ __setup_darwin() {
 __platform_run_os "linux"  __setup_linux
 __platform_run_os "darwin" __setup_darwin
 
-__platform_run "x86_64-linux"   __setup_x86_64-linux
-__platform_run "x86_64-darwin"  __setup_x86_64-darwin
+__platform_run "x86_64-linux"   __setup_x86_64_linux
+__platform_run "aarch64-linux"  __setup_aarch64_linux
 
-__platform_run "aarch64-linux"  __setup_aarch64-linux
-__platform_run "aarch64-darwin" __setup_aarch64-darwin
+__platform_run "x86_64-darwin"  __setup_x86_64_darwin
+__platform_run "aarch64-darwin" __setup_aarch64_darwin
 
 # Primary entry point.
 # Executed on all platforms after the setup hooks complete.
