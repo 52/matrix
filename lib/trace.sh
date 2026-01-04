@@ -85,3 +85,17 @@ trace_info() {
 trace_debug() {
     __trace_format "${__TRACE_COLOR_CYAN}" "DEBUG" "${1}"
 }
+
+# Prints a section header.
+# Outputs a visual banner for seperating log sections.
+#
+# Arguments:
+#
+# - $1 - Header title.
+trace_header() {
+    printf '\n'
+    printf '    ╭────────────────────────────────────────────────────╮\n'
+    printf '    │  ◈   %s\n' "${1}"
+    printf '    ╰────────────────────────────────────────────────────╯\n'
+    printf '\n'
+}
